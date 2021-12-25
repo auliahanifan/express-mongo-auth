@@ -47,7 +47,7 @@ export class UserMongooseAccessor implements UserAccessor {
             })
         .catch(err => {
             console.log(`[uid:${input.username}]: failed updateOne`,err)
-            return err;
+            throw err;
         });   
     }
 
@@ -59,15 +59,18 @@ export class UserMongooseAccessor implements UserAccessor {
                 role: input.role 
             }
         );
-
-        insertion.save().catch(err => {
-            console.log(`[uid:${input.username}]: failed insertOne`,err)
+        
+        await insertion.save().catch(err => {
+            console.log(`[uid:${input.username}]: failed insertOne`,err);
+            throw err;
         });
     }
 
     async deleteOne(username: String): Promise<void> {
+        console.log(username);
         await User.deleteOne({username}).catch(err => {
             console.log(`[uid:${username}]: failed deleteOne`,err)
+            throw err;
         });
     }
 }

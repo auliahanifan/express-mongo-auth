@@ -1,36 +1,81 @@
-// import { CustomerInput } from '../../dtos/inputs/customerInput';
-// import { CustomerService } from '../../service/api/customerService';
-import User from '../../db/mongoose/models/user.mongoose.model';
-import { BaseResponse, createResponse, HttpStatus }  from '../../utils';
+import { UserInput } from '../../dtos/inputs/user.input';
+import { UserService } from '../../services/api/user.api.service';
+import { BaseResponse, createResponse, HttpStatus, ServiceStatus }  from '../../utils';
 import { CrudController } from '../api/crud.api.controller';
 
-export class CustomerControllerImpl implements CrudController {
-    // private _customerService : CustomerService;
+export class UserControllerImpl implements CrudController {
+    private _userService : UserService;
 
-    constructor() {
-        // this._customerService = customerService;
+    constructor(userService: UserService) {
+        this._userService = userService;
     }
 
     async getAll(req: any): Promise<BaseResponse> {
-        // const result = await this._customerService.getAll();
-        return createResponse(HttpStatus.OK, {});
+        const result = await this._userService.getAll();
+
+        if (result.status == ServiceStatus.OK) {
+            return createResponse(HttpStatus.OK, result.body);
+        }
+        return createResponse(HttpStatus.BadRequest, {});
     }
 
     async insertOne(req: any): Promise<BaseResponse> {
-        const jsonBody = req.body;
-        // const result = await this._customerService.insertOne(CustomerInput.fromObject(jsonBody));
-        return createResponse(HttpStatus.OK, {});
+        try {
+            const jsonBody = req.body;
+            const userInput = UserInput.fromObject(jsonBody);
+            const result = await this._userService.insertOne(userInput);
+    
+            if (result.status == ServiceStatus.OK) {
+                return createResponse(HttpStatus.Created, result.body);
+            }
+            return createResponse(HttpStatus.BadRequest, result.body);    
+        } catch (error) {
+            return createResponse(HttpStatus.BadRequest, error.message);            
+        }
     }
 
     async getOne(req: any): Promise<BaseResponse> {
-        const userAdmin = await User.findOne({ username: 'admin' }).exec();
-        return createResponse(HttpStatus.OK, userAdmin);
-    }
+        try {
+            const username = req.params.username;
+            const result = await this._userService.getOne(username);
     
-    async updateOne(req: any): Promise<BaseResponse> {
-        throw new Error('Method not implemented.');
+            if (result.status == ServiceStatus.OK) {
+                return createResponse(HttpStatus.OK, result.body);
+            }
+            return createResponse(HttpStatus.BadRequest, result.body);
+        } catch (error) {
+            return createResponse(HttpStatus.BadRequest, error.message);            
+        }
     }
+
+    async updateOne(req: any): Promise<BaseResponse> {
+        try {
+            const jsonBody = req.body;
+            const userInput = UserInput.fromObject(jsonBody);
+            const result = await this._userService.updateOne(userInput);
+
+            if (result.status == ServiceStatus.OK) {
+                return createResponse(HttpStatus.OK, result.body);
+            }
+            return createResponse(HttpStatus.BadRequest, {});
+            
+        } catch (error) {
+            return createResponse(HttpStatus.BadRequest, error.message);            
+        }
+        
+    }
+
     async deleteOne(req: any): Promise<BaseResponse> {
-        throw new Error('Method not implemented.');
+        try {
+            const username = req.params.username;
+            const result = await this._userService.deleteOne(username);
+    
+            if (result.status == ServiceStatus.OK) {
+                return createResponse(HttpStatus.OK, result.body);
+            }
+            return createResponse(HttpStatus.BadRequest, {});
+        } catch (error) {
+            return createResponse(HttpStatus.BadRequest, error.message);            
+        }
     }
 }

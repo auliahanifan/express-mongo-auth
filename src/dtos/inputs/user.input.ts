@@ -1,3 +1,5 @@
+import { UserRole } from "../common/userRole.enum";
+
 export class UserInput {
     username: string;
     password: string;
@@ -20,6 +22,13 @@ export class UserInput {
         input.username = obj["username"];
         input.password = obj["password"];
         input.role = obj["role"];
+        var role : UserRole = UserRole[input.role];
+        if (role == undefined) throw new Error("user Role doesnt exist");
+
         return input;
+    }
+
+    public setPassword(v : string) {
+        this.password = v;
     }
 }

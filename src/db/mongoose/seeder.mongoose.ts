@@ -10,17 +10,17 @@ const admin = new User(
 );
 
 admin.save().then(() => console.log('seeder: admin created')).catch(e => {
-    console.log('seeder: admin duplicate')
+    console.log('seeder: admin is already created')
 });
 
-const commonuser = new User(
+const user = new User(
     { 
-        username: 'commonuser', 
-        password: HashPassword('commonuser'), 
+        username: 'user', 
+        password: HashPassword('user'), 
         role: 'COMMON' 
     }
 );
 
-commonuser.save().then(() => console.log('seeder: commonuser created')).catch(e => {
-    console.log('seeder: commonuser duplicate')
+user.save().then(() => console.log('seeder: user created')).catch(e => {
+    console.log('seeder: user is already created')
 });

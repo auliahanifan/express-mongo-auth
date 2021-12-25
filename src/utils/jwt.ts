@@ -8,44 +8,57 @@ const GenerateToken = (data) => {
 }
 
 const DecodeToken = (token) => {
-    return jwt.decode(token);
+    return jwt.decode(token, process.env.JWT_SECRET_TOKEN ? process.env.JWT_SECRET_TOKEN : defaultJwtSecretToken);
 }
 
-const AuthAllUser = (req, res, next) => {
-    return AuthToken(req, res, next, false);
+const AuthAllUser = (req, res) => {
+    return AuthToken(req, res, false, false);
 }
 
-const AuthAdminOnly = (req, res, next) => {
-    return AuthToken(req, res, next, true);
+const AuthAdminOnly = (req, res) => {
+    return AuthToken(req, res, true, false);
 }
 
-const AuthToken = (req, res, next, isAdmin) => {
+const AuthUserSelfLimit = async (req, res) => {
+    return AuthToken(req, res, false, true);
+}
+
+const AuthToken = async (req, res, isAdminOnly, userSelfLimit) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
-    if (token == null) return res.sendStatus(401).json({
+    if (token == null) return res.status(401).json({
         "status": 401,
         "message": "invalid token"
     })
 
-    const data = DecodeToken(token);
+    const data = await DecodeToken(token);
 
-    if (isAdmin) {
-        if ((data.role) !== "ADMIN") {
-            return res.sendStatus(403).json({
-                "status": 403,
+    if ((data.role) !== "ADMIN") {
+        if (isAdminOnly) {
+            return res.status(401).json({
+                "status": 401,
                 "message": "you should be admin"
             })
         }
+
+        if (userSelfLimit) {
+            if (req.params.username != data.username) {
+                return res.status(401).json({
+                    "status": 401,
+                    "message": "cannot read other user"
+                })
+            }
+        }
     }
+    
 
     jwt.verify(token, process.env.JWT_SECRET_TOKEN ? process.env.JWT_SECRET_TOKEN : defaultJwtSecretToken, (err, user) => {
-        if (err) return res.sendStatus(403).json({
+        if (err) return res.status(403).json({
             "status": 403,
             "message": "invalid token"
         })
         req.token = user
-        next()
     });
 }
 
@@ -53,5 +66,6 @@ export {
     GenerateToken,
     DecodeToken,
     AuthAllUser,
-    AuthAdminOnly
+    AuthAdminOnly,
+    AuthUserSelfLimit
 }
