@@ -1,0 +1,16 @@
+version: "3"
+services: 
+    mongodb:
+        container_name: mongodb
+        image: mongo:5.0.4-focal
+        env_file: .env.local.docker
+        ports: 
+        - 27019:27017
+    express-mongo-auth:
+        container_name: express-mongo-auth
+        image: auliahanifan/express-mongo-auth:latest
+        env_file: .env.local.docker
+        ports:
+        - 3000:3000
+        depends_on: 
+        - mongodb

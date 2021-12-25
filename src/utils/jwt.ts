@@ -32,32 +32,33 @@ const AuthToken = async (req, res, isAdminOnly, userSelfLimit) => {
         "message": "invalid token"
     })
 
-    const data = await DecodeToken(token);
-
-    if ((data.role) !== "ADMIN") {
-        if (isAdminOnly) {
-            return res.status(401).json({
-                "status": 401,
-                "message": "you should be admin"
-            })
-        }
-
-        if (userSelfLimit) {
-            if (req.params.username != data.username) {
-                return res.status(401).json({
-                    "status": 401,
-                    "message": "cannot read other user"
-                })
-            }
-        }
-    }
     
-
-    jwt.verify(token, process.env.JWT_SECRET_TOKEN ? process.env.JWT_SECRET_TOKEN : defaultJwtSecretToken, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET_TOKEN ? process.env.JWT_SECRET_TOKEN : defaultJwtSecretToken, async (err, user) => {
         if (err) return res.status(403).json({
             "status": 403,
             "message": "invalid token"
         })
+        
+        const data = await DecodeToken(token);
+
+        if ((data.role) !== "ADMIN") {
+            if (isAdminOnly) {
+                return res.status(401).json({
+                    "status": 401,
+                    "message": "you should be admin"
+                })
+            }
+
+            if (userSelfLimit) {
+                if (req.params.username != data.username) {
+                    return res.status(401).json({
+                        "status": 401,
+                        "message": "cannot read other user"
+                    })
+                }
+            }
+        }
+        
         req.token = user
     });
 }
