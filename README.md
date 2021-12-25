@@ -13,3 +13,14 @@ USER
 username = user
 password = user
 ```
+
+## Diagrams
+
+Login Flow 
+
+![Login Flow](/docs/login-flow.png)
+
+CRUD Flow 
+
+![CRUD Flow](/docs/crud-flow.png)
+
