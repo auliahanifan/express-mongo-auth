@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mongodb
+  name: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mongodb
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mongodb
+    spec:
+      containers:
+        - env:
+            - name: MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_DATABASE
+                  name: env-local-docker
+            - name: MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_HOST
+                  name: env-local-docker
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_INITDB_DATABASE
+                  name: env-local-docker
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_INITDB_ROOT_PASSWORD
+                  name: env-local-docker
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_INITDB_ROOT_USERNAME
+                  name: env-local-docker
+            - name: MONGO_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_PASSWORD
+                  name: env-local-docker
+            - name: MONGO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_PORT
+                  name: env-local-docker
+            - name: MONGO_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_USERNAME
+                  name: env-local-docker
+          image: mongo:5.0.4-focal
+          name: mongodb
+          ports:
+            - containerPort: 27017
+          resources: {}
+      restartPolicy: Always
+status: {}
