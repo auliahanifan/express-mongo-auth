@@ -3,6 +3,7 @@ import * as router from './routers';
 import bodyParser from 'body-parser';
 import './db/mongoose/conn.mongoose';
 import './db/mongoose/seeder.mongoose';
+import './config';
 
 const app = express();
 const port = 3000;
