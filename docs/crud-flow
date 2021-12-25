@@ -1,0 +1,23 @@
+@startuml
+HttpClient -> WebServer: Send Request
+
+WebServer -> Router: Get Route
+
+Router -> JWTUtil: Check for JWT Token
+
+JWTUtil -> Controller: Process the body of json/params
+
+Controller -> Service: Process the logic
+
+Service -> Accessor: Request data from mongodb
+
+Accessor -> Service: Send response Data
+
+Service -> Controller: Send response 
+
+Controller -> Router: Send response
+
+Router -> WebServer: Send response
+
+WebServer -> HttpClient: Send response
+@enduml
