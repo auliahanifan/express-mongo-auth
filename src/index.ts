@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 
 app.use(`/${version}/helloworld`, router.helloWorldRouter);
 app.use(`/${version}/user`, router.userRouter);
+app.use(`/${version}/auth`, router.authRouter);
 
 app.listen(port, () => {
   console.log(`express-mongo-auth app listening at http://localhost:${port}`);

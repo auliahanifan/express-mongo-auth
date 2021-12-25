@@ -1,11 +1,11 @@
 export class UserInput {
     username: string;
-    password: number;
+    password: string;
     role: string;
 
     static create(
         username: string,
-        password: number,
+        password: string,
         role: string
     ) : UserInput {
         let input = new UserInput;

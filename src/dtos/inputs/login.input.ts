@@ -1,10 +1,10 @@
 export class LoginInput {
     username: string;
-    password: number;
+    password: string;
 
     static create(
         username: string,
-        password: number,
+        password: string,
     ) : LoginInput {
         let input = new LoginInput;
         input.username = username;

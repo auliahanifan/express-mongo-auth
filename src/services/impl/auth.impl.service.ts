@@ -1,5 +1,6 @@
 import { UserAccessor } from "../../accessors/api/user.api.accessor";
 import { LoginInput } from "../../dtos/inputs/login.input";
+import { AuthResult } from "../../dtos/results/auth.result";
 import { BaseOutput, createOutput, ServiceStatus } from "../../utils";
 import { ValidateAuth } from "../../utils/crypto";
 import { GenerateToken } from "../../utils/jwt";
@@ -12,7 +13,7 @@ export class AuthServiceImpl implements AuthService {
         this._userAccessor = userAccessor;
     }
 
-    async login(input: LoginInput): Promise<BaseOutput<String>> {
+    async login(input: LoginInput): Promise<BaseOutput<AuthResult>> {
         const user = await this._userAccessor.getOne(input.username);
 
         const isValid = ValidateAuth(input.password, user.password);
@@ -21,14 +22,14 @@ export class AuthServiceImpl implements AuthService {
                 username: user.username,
                 role: user.role
             });
-            return createOutput(ServiceStatus.OK, token);
+            return createOutput(ServiceStatus.OK, AuthResult.create(token, ''));
         }
-        
+
         return createOutput(ServiceStatus.Error, '')
     }
 
     // NOT YET IMPLEMENTED
-    refreshToken(jwt: String): Promise<BaseOutput<String>> {
+    refreshToken(jwt: String): Promise<BaseOutput<AuthResult>> {
         throw new Error("Method not implemented.");
     }
 }
