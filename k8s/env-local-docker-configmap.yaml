@@ -1,16 +1,16 @@
 apiVersion: v1
 data:
   MONGO_DATABASE: appdb
-  MONGO_HOST: mongodb
+  MONGO_HOST: "10.110.127.238"
   MONGO_INITDB_DATABASE: appdb
   MONGO_INITDB_ROOT_PASSWORD: app
   MONGO_INITDB_ROOT_USERNAME: app
   MONGO_PASSWORD: app
-  MONGO_PORT: "27017"
+  MONGO_PORT: "27019"
   MONGO_USERNAME: app
 kind: ConfigMap
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: express-mongo-auth-env-local-docker
+    name: express-mongo-auth-env-local-docker
   name: env-local-docker
