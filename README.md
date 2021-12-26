@@ -1,5 +1,26 @@
 # express-mongo-auth
 
+## Schemas
+
+#### User Schema
+
+```js
+{
+    username: {
+        type: String,
+        index: true,
+        unique: true
+    },
+    password: {
+        type: String
+    },
+    role: {
+        type: String,
+        enum: ['ADMIN', 'COMMON']
+    },
+}
+```
+
 ## Data Seeder
 
 Here are the data that already exist when running this project.
